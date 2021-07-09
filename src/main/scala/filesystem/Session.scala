@@ -21,19 +21,27 @@ case class MkDir(dirName: String, path: Option[String] = None) extends Operation
     path match {
       case None =>
         val dirToCreate = new ChildDirectory(dirName, s.workingDir)
-        val newSess = s.workingDir.addItem(dirToCreate)
+        val newRoot = s.root.addItemToPath(dirToCreate)
+        val newSess = s.workingDir.addItem(s.root.addItemToPath(dirToCreate), newRoot.findDir(path))
         Session(newSess)
-      case Some(p) =>
+      case Some(p) => ???
         // path-ul should exist
         // if not, throw smth
         // else create @dirName
-        if(!p.startsWith("/")) throw NuIncepeCuP
+//        if(!p.startsWith("/")) throw NuIncepeCuP
+        // a/b/c/d -> mk a; mk b; mk c; mk d
+        // path = Some("/a/b/c"), dirName = "d"
+         /*
+         1. find root & create a return a
+         2. create b return b
+         3. create c return c
+          */
 
     }
   }
 }
 
-case class Session(workingDir: Directory = Root) {
+case class Session(root: Root, workingDir: Directory = Root) {
 
 }
 

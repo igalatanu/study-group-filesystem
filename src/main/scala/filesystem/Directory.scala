@@ -5,6 +5,8 @@ abstract class Directory extends Item {
   val content: List[Item]
 
   def addItem(item: Item): Directory
+
+  def ls: Unit = content.foreach(i => println(i.name))
 }
 
 case class Root(val content: List[Item] = List.empty) extends Directory {
@@ -32,11 +34,32 @@ case class ChildDirectory(val name: String, val parentDir: Directory, val conten
 
   override def getPath(): String = parent.get.getPath() + "/" + name
 
+  /* 1.
+  root + currentDir
+
+  cd
+  currenDir = root.getDir(path)
+
+  mkDir => root = root.mkdir(path)
+
+  List(1,2,3,4).foldRight(z: A)((a: Int, z: A) => A)
+
+
+   */
+
   override def addItem(item: Item): ChildDirectory = {
     item match {
-      case c: ChildDirectory => new ChildDirectory(name, parentDir, item :: this.content)
+      case c: ChildDirectory =>
+        parentDir.replace(path, newChild)
+        ChildDirectory(name, parentDir, item :: this.content)
       case _ => ???
     }
+  }
+
+  def getRoot(): Root = ???
+
+  def mkDir(name: String): ChildDirectory = {
+    addItem(ChildDirectory(name, this))
   }
 
   /*def checkIfDirectoryHierarchyExists(List[ChildDirectory]) {
